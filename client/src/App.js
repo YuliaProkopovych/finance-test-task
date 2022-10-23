@@ -1,12 +1,12 @@
-import './App.css';
+import { Grommet } from 'grommet';
 
 import Tickers from './features/tickers'
 
 function App() {
   return (
-      <div className="App">
-        <Tickers />
-      </div>
+    <Grommet plain>
+      <Tickers />
+    </Grommet>
   );
 }
 
