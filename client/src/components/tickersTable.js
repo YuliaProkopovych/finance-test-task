@@ -105,10 +105,11 @@ function TickersTable({ tickers }) {
   return (
       <Box>
         <DataTable
-          pad={{ horizontal: 'small', vertical: 'medium' }}
+          pad="medium"
           columns={tableColumns}
           data={tickers}
           step={tickers.length}
+          background={'backgroundWhite'}
           responsive="true"
         />
       </Box>
