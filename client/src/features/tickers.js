@@ -1,15 +1,10 @@
 import React, { useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { change } from './tickersSlice'
-import { io } from "socket.io-client";
-import config from "../config";
+
+import { startSocketConnection, closeSocketConnection, onTickerMessage } from '../socket'
 
 import TickersTable from '../components/tickersTable';
-
-const socket = io(config.SOCKET_URL);
-socket.on("connect_error", (err) => {
-  console.log(`connect_error due to ${err.message}`);
-});
 
 function Tickers() {
   const tickers = useSelector((state) => {
@@ -18,18 +13,17 @@ function Tickers() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.emit('start');
-    });
 
-    socket.on('ticker', (payload) => {
+    startSocketConnection();
+
+    onTickerMessage((payload) => {
       dispatch(change(payload));
     });
 
     return () => {
-      socket.off("ticker", () => {});
+      closeSocketConnection();
     };
-  }, [socket]);
+  }, [dispatch]);
 
   return (
     <TickersTable tickers={tickers} />
