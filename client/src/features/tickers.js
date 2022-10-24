@@ -4,6 +4,8 @@ import { change } from './tickersSlice'
 import { io } from "socket.io-client";
 import config from "../config";
 
+import TickersTable from '../components/tickersTable';
+
 const socket = io(config.SOCKET_URL);
 socket.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
@@ -29,9 +31,8 @@ function Tickers() {
     };
   }, [socket]);
 
-
   return (
-    <div>{tickers.map(ticker => {})}</div>
+    <TickersTable tickers={tickers} />
   )
 }
 
