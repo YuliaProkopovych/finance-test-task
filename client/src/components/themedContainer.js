@@ -11,7 +11,7 @@ const theme = deepMerge(grommet, {
       increasingBackground: '#ccff99',
       decreasingBackground: '#ffa9a9',
       background: '#ccc',
-      backgroundWhite: 'rgba(255,255,255,0.7)',
+      backgroundWhite: '#f0f0f0',
     },
     font: {
       family: 'Roboto',

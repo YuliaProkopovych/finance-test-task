@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
-import { Box, DataTable, Text } from 'grommet';
+import { Box, DataTable, Text, ResponsiveContext } from 'grommet';
 import { LinkDown, LinkUp } from 'grommet-icons';
 
 const tickersNames = {
@@ -22,16 +22,24 @@ const tickersColors = {
 };
 
 function TickersTable({ tickers }) {
+  const size = useContext(ResponsiveContext);
 
   const tableColumns = [
     {
       property: 'ticker',
       header: 'Name',
+      pin: ['xsmall', 'small', 'medium'].includes(size),
       primary: true,
       align: 'left',
       render: ({ ticker }) => (
         <Box gap="small" direction="row" align="center">
-          <Box style={{ borderRadius: '4px' }} pad="xsmall" background={tickersColors[ticker]}>
+          <Box
+            style={{ borderRadius: '4px' }}
+            pad="xsmall"
+            background={tickersColors[ticker]}
+            width={{ min: '65px' }}
+            align="center"
+          >
             <Text size="small" weight="bold">
               {ticker}
             </Text>
@@ -40,7 +48,7 @@ function TickersTable({ tickers }) {
               {tickersNames[ticker]}
           </Text>
         </Box>
-        )
+      )
     },
     {
       property: 'exchange',
@@ -57,8 +65,14 @@ function TickersTable({ tickers }) {
       header: 'Change \u0024',
       align: 'center',
       render: ({ change }) => (
-        <Box pad="small" background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}>
-          <Text color={change > 0 ? 'increasingText' : 'decreasingText'}>
+        <Box
+          pad="small"
+          background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
+          width={{ min: '110px' }}
+        >
+          <Text
+            whiteSpace="nowrap"
+            color={change > 0 ? 'increasingText' : 'decreasingText'}>
             + {change}
           </Text>
         </Box>
@@ -72,6 +86,7 @@ function TickersTable({ tickers }) {
         <Box
           direction="row"
           align="center"
+          width={{ min: '100px' }}
           pad="small"
           background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
         >
@@ -103,14 +118,14 @@ function TickersTable({ tickers }) {
     },
   ]
   return (
-      <Box>
+      <Box width={{ max: '100%' }} overflow="auto">
         <DataTable
-          pad="medium"
+          pad= { ['xlarge', 'large'].includes(size) ? 'large' : 'small' }
           columns={tableColumns}
           data={tickers}
           step={tickers.length}
           background={'backgroundWhite'}
-          responsive="true"
+          pin
         />
       </Box>
   )
