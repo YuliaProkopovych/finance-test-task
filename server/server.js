@@ -4,6 +4,8 @@ const http = require('http');
 const io = require('socket.io');
 const cors = require('cors');
 
+const bodyParser = require('body-parser')
+
 const FETCH_INTERVAL = 5000;
 const PORT = process.env.PORT || 4000;
 
@@ -42,12 +44,15 @@ function getQuotes(socket) {
   socket.emit('ticker', quotes);
 }
 
+
+let timer;
+let connectedSocket;
 function trackTickers(socket) {
   // run the first time immediately
   getQuotes(socket);
 
   // every N seconds
-  const timer = setInterval(function() {
+  timer = setInterval(function() {
     getQuotes(socket);
   }, FETCH_INTERVAL);
 
@@ -56,8 +61,18 @@ function trackTickers(socket) {
   });
 }
 
+function updateTimeInterval(interval) {
+  customInterval = interval;
+  clearInterval(timer);
+
+  timer = setInterval(function() {
+    getQuotes(connectedSocket);
+  }, interval);
+}
+
 const app = express();
 app.use(cors());
+app.use(bodyParser.json())
 const server = http.createServer(app);
 
 const socketServer = io(server, {
@@ -70,9 +85,23 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.post('/set-interval', function(req, res) {
+  try {
+    const interval = req.body?.interval;
+    if(interval) {
+      updateTimeInterval(interval);
+    }
+    res.send(`set interval to ${interval}`);
+  } catch (error) {
+    console.error(error);
+  }
+
+});
+
 socketServer.on('connection', (socket) => {
   socket.on('start', () => {
     trackTickers(socket);
+    connectedSocket = socket;
   });
 });
 
