@@ -1,4 +1,5 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
+import { DateTime } from "luxon";
 
 import { Box, DataTable, Text, ResponsiveContext } from 'grommet';
 import { LinkDown, LinkUp } from 'grommet-icons';
@@ -111,10 +112,7 @@ function TickersTable({ tickers }) {
       property: 'last_trade_time',
       header: 'Last trade time',
       align: 'center',
-      render: ({ last_trade_time }) => {
-        const date = new Date(last_trade_time);
-        return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}, ${date.getDate()}.${date.getMonth()}`;
-      }
+      render: ({ last_trade_time }) => ( DateTime.fromISO(last_trade_time).toFormat('HH:mm:ss')),
     },
   ]
   return (
