@@ -11,12 +11,12 @@ function IntervalForm() {
         <TextInput
           placeholder="Set interval"
           value={interval}
-          onChange={event => setInterval(event.target.value)}
+          onChange={(event) => setInterval(event.target.value)}
         />
       </Box>
       <Button type="submit" label="Set interval" onClick={() => (setNewInterval(interval))} />
     </Box>
-  )
+  );
 }
 
 export default IntervalForm;

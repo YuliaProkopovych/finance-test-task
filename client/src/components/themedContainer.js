@@ -1,3 +1,4 @@
+import React from 'react';
 import { Grommet, Box } from 'grommet';
 import { grommet } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';

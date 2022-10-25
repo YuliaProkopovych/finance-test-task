@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { change } from './tickersSlice'
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { change } from './tickersSlice';
 
-import { Text, Box } from 'grommet'
+import { Text, Box } from 'grommet';
 
 import TickersTable from '../components/tickersTable';
 
 function Tickers({ socket }) {
-  const [ connectionError, setConnectionError ] = useState(false);
-  const [ connectionLost, setConnectionLost ] = useState(false);
+  const [connectionError, setConnectionError] = useState(false);
+  const [connectionLost, setConnectionLost] = useState(false);
 
-  const tickers = useSelector((state) => {
-    return state.tickers.tickers;
-  });
+  const tickers = useSelector((state) => (state.tickers.tickers));
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-
     socket.startSocketConnection(() => {
       setConnectionLost(false);
     });
@@ -31,7 +28,7 @@ function Tickers({ socket }) {
     });
 
     setInterval(() => {
-      if(tickers.length === 0) {
+      if (tickers.length === 0) {
         setConnectionError(true);
       }
     }, 10000);
@@ -47,16 +44,16 @@ function Tickers({ socket }) {
 
   return (
     <>
-    { tickers.length !== 0  ? (
-      <Box>
-        { connectionLost && <Text>Lost connection. Can't update!</Text> }
-        <TickersTable tickers={tickers} />
-      </Box>
-    ) : (
-      <Text>{ connectionError ? 'Looks like we are having problems, please try again later!' : 'Loading, please wait...' }</Text>
-    )}
+      { tickers.length !== 0  ? (
+        <Box>
+          { connectionLost && <Text>Lost connection. Can't update!</Text> }
+          <TickersTable tickers={tickers} />
+        </Box>
+      ) : (
+        <Text>{ connectionError ? 'Looks like we are having problems, please try again later!' : 'Loading, please wait...' }</Text>
+      )}
     </>
-  )
+  );
 }
 
 export default Tickers;

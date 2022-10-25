@@ -15,7 +15,7 @@ function Header() {
       pad="large"
       direction="row"
       gap="medium"
-      background={'backgroundWhite'}
+      background="backgroundWhite"
     >
       <Money size="large" />
       <Box>

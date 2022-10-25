@@ -1,12 +1,9 @@
-import React from 'react'
-import { render } from '@testing-library/react'
-import { Provider } from 'react-redux'
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 
-import { screen } from '@testing-library/react'
-
-import Tickers from './tickers'
-import store from '../app/store'
-
+import Tickers from './tickers';
+import store from '../app/store';
 
 function renderWithProviders(
   ui,
@@ -14,13 +11,12 @@ function renderWithProviders(
     preloadedState = {},
     store,
     ...renderOptions
-  } = {}
+  } = {},
 ) {
   function Wrapper({ children }) {
-    return <Provider store={store}>{children}</Provider>
+    return <Provider store={store}>{children}</Provider>;
   }
-
-  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) }
+    return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
 
 const socketWithConnectionError = {
@@ -30,11 +26,10 @@ const socketWithConnectionError = {
   },
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
-  onTickerMessage: (updateTickersFunction) => {}
-}
+  onTickerMessage: (updateTickersFunction) => {},
+};
 
 test('on connection error', async () => {
-
   renderWithProviders(<Tickers socket={socketWithConnectionError} />, { store, preloadedState: { tickers: [] }})
   screen.debug();
 
@@ -52,7 +47,7 @@ const socketWithBadData = {
   onTickerMessage: (updateTickersFunction) => {
     updateTickersFunction({});
   }
-}
+};
 
 test('on connection and loading', async () => {
   renderWithProviders(<Tickers socket={socketWithBadData} />, { store, preloadedState: { tickers: [] }})
