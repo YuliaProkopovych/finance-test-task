@@ -9,11 +9,13 @@ export const tickersSlice = createSlice({
   initialState,
   reducers: {
     change: (state, action) => {
-      state.tickers = action.payload
+      if(Array.isArray(action.payload)) {
+        state.tickers = action.payload;
+      }
     },
   },
-})
+});
 
-export const { change } = tickersSlice.actions
+export const { change } = tickersSlice.actions;
 
-export default tickersSlice.reducer
+export default tickersSlice.reducer;

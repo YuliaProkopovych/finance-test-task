@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import CustomHeader from './components/header';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('Header', () => {
+  render(<CustomHeader />);
+  test('Header is rendered', () => {
+    const headerElement = screen.getByText(/Finance/i);
+    expect(headerElement).toBeInTheDocument();
+  });
+
 });

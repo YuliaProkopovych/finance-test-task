@@ -1,14 +1,17 @@
 import React from 'react'
 
 import { Box, Heading } from 'grommet';
+
+import socket from '../socket'
+
 import Tickers from '../features/tickers'
 
-function Watchlist({ tickers }) {
+function Watchlist() {
 
   return (
     <Box pad="medium">
       <Heading level="3">Your watchlist</Heading>
-      <Tickers />
+      <Tickers socket={socket} />
     </Box>
   )
 }

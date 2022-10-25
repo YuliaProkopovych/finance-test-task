@@ -1,32 +1,55 @@
-import React, { useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { change } from './tickersSlice'
 
-import { startSocketConnection, closeSocketConnection, onTickerMessage } from '../socket'
+import { Text, Box } from 'grommet'
 
 import TickersTable from '../components/tickersTable';
 
-function Tickers() {
+function Tickers({ socket }) {
+  const [ connectionError, setConnectionError ] = useState(false);
+  const [ connectionLost, setConnectionLost ] = useState(false);
+
   const tickers = useSelector((state) => {
     return state.tickers.tickers;
-  })
+  });
+
   const dispatch = useDispatch();
 
   useEffect(() => {
 
-    startSocketConnection();
+    socket.startSocketConnection();
 
-    onTickerMessage((payload) => {
+    socket.onConnectionError(() => {
+      setConnectionError(true);
+    });
+
+    setInterval(() => {
+      if(tickers.length === 0) {
+        setConnectionError(true);
+      }
+    }, 6000);
+
+    socket.onTickerMessage((payload) => {
       dispatch(change(payload));
     });
 
     return () => {
-      closeSocketConnection();
+      socket.closeSocketConnection();
     };
   }, [dispatch]);
 
   return (
-    <TickersTable tickers={tickers} />
+    <>
+    { tickers.length !== 0  ? (
+      <Box>
+        { connectionLost && <Text>Lost connection. Can't update!</Text> }
+        <TickersTable tickers={tickers} />
+      </Box>
+    ) : (
+      <Text>{ connectionError ? 'Looks like we are having problems, please try again later!' : 'Loading, please wait...' }</Text>
+    )}
+    </>
   )
 }
 

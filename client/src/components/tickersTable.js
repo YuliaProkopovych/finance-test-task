@@ -30,7 +30,7 @@ function TickersTable({ tickers }) {
       header: 'Name',
       pin: ['xsmall', 'small', 'medium'].includes(size),
       primary: true,
-      align: 'left',
+      align: 'start',
       render: ({ ticker }) => (
         <Box gap="small" direction="row" align="center">
           <Box
