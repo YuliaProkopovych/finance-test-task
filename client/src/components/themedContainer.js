@@ -19,6 +19,26 @@ const theme = deepMerge(grommet, {
       height: '20px',
     },
   },
+  textInput: {
+    extend: () => `
+    &:focus {
+      box-shadow: none;
+    }
+  `,
+  },
+  button: {
+    border: {
+      color: '#aaa',
+      radius: '4px',
+    },
+    background: '#333',
+    extend: `
+      &:hover {
+        box-shadow: none;
+        background-color: #eee;
+      }
+      `,
+  },
 });
 
 function ThemedContainer({ children }) {

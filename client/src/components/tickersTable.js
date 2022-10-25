@@ -120,7 +120,7 @@ function TickersTable({ tickers }) {
   return (
       <Box width={{ max: '100%' }} overflow="auto">
         <DataTable
-          pad= { ['xlarge', 'large'].includes(size) ? 'large' : 'small' }
+          pad= { ['xlarge', 'large'].includes(size) ? 'medium' : 'small' }
           columns={tableColumns}
           data={tickers}
           step={tickers.length}
