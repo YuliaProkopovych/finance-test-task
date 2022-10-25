@@ -71,11 +71,20 @@ function TickersTable({ tickers }) {
           background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
           width={{ min: '110px' }}
         >
-          <Text
-            whiteSpace="nowrap"
-            color={change > 0 ? 'increasingText' : 'decreasingText'}>
-            + {change}
-          </Text>
+          {change > 0 ? (
+            <Text
+              whiteSpace="nowrap"
+              color="increasingText">
+              + { Math.abs(change) }
+            </Text>
+          ) : (
+            <Text
+              whiteSpace="nowrap"
+              color="decreasingText">
+              - { Math.abs(change) }
+            </Text>
+          )}
+
         </Box>
         )
     },

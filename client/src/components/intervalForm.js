@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 import { Box, TextInput, Button } from 'grommet';
-import setNewInterval from '../utils/setSocketInterval'
+import setNewInterval from '../utils/setSocketInterval';
 
 function IntervalForm() {
   const [interval, setInterval] = useState(5000);
