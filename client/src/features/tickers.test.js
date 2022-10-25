@@ -24,6 +24,7 @@ function renderWithProviders(
 }
 
 const socketWithConnectionError = {
+  onConnectionLost: (connectionOffFunction) => { },
   onConnectionError: (errorFunction) => {
     errorFunction();
   },
@@ -44,6 +45,7 @@ test('on connection error', async () => {
 });
 
 const socketWithBadData = {
+  onConnectionLost: (connectionOffFunction) => { },
   onConnectionError: (errorFunction) => {},
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
@@ -110,6 +112,7 @@ function getQuotes() {
 // }
 
 const socketWithCorrectData = {
+  onConnectionLost: (connectionOffFunction) => { },
   onConnectionError: (errorFunction) => {},
   startSocketConnection: () => {},
   closeSocketConnection: () => {},

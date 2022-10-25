@@ -10,9 +10,17 @@ const onConnectionError = (errorFunction) => {
   });
 }
 
-const startSocketConnection = () => {
+const onConnectionLost = (connectionOffFunction) => {
+  socket.on('disconnect', (err) => {
+    console.log('disconnected');
+    connectionOffFunction();
+  });
+}
+
+const startSocketConnection = (connectionOnFunction) => {
   socket.on('connect', () => {
     socket.emit('start');
+    connectionOnFunction();
   });
 }
 
@@ -26,6 +34,6 @@ const onTickerMessage = (updateTickersFunction) => {
   });
 }
 
-const socketObject = { onTickerMessage, closeSocketConnection, startSocketConnection, onConnectionError }
+const socketObject = { onConnectionLost, onTickerMessage, closeSocketConnection, startSocketConnection, onConnectionError }
 
 export default socketObject;

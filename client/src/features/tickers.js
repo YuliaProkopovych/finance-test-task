@@ -18,17 +18,23 @@ function Tickers({ socket }) {
 
   useEffect(() => {
 
-    socket.startSocketConnection();
+    socket.startSocketConnection(() => {
+      setConnectionLost(false);
+    });
 
     socket.onConnectionError(() => {
       setConnectionError(true);
+    });
+
+    socket.onConnectionLost(() => {
+      setConnectionLost(true);
     });
 
     setInterval(() => {
       if(tickers.length === 0) {
         setConnectionError(true);
       }
-    }, 6000);
+    }, 10000);
 
     socket.onTickerMessage((payload) => {
       dispatch(change(payload));
