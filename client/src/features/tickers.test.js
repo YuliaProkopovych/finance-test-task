@@ -31,7 +31,6 @@ const socketWithConnectionError = {
 
 test('on connection error', async () => {
   renderWithProviders(<Tickers socket={socketWithConnectionError} />, { store, preloadedState: { tickers: [] }})
-  screen.debug();
 
   expect(screen.getByText(/Looks like we are having problems, please try again later!/i)).toBeInTheDocument();
   expect(screen.queryByText(/Loading, please wait.../i)).not.toBeInTheDocument();
@@ -71,7 +70,6 @@ test('on connection and bad data', async () => {
 
 });
 
-//moking socket
 function randomValue(min = 0, max = 1, precision = 0) {
   const random = Math.random() * (max - min) + min;
   return random.toFixed(precision);
@@ -96,16 +94,6 @@ function getQuotes() {
   return quotes;
 }
 
-// function sendTickers() {
-//   getQuotes();
-
-//   const timer = setInterval(function() {
-//     getQuotes();
-//   }, 5000);
-
-//   setTimeout();
-// }
-
 const socketWithCorrectData = {
   onConnectionLost: (connectionOffFunction) => { },
   onConnectionError: (errorFunction) => {},
@@ -124,4 +112,29 @@ test('on connection and correct data', async () => {
   expect(screen.queryByText(/Loading, please wait.../i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Lost connection. Can't update!/i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Looks like we are having problems, please try again later!/i)).not.toBeInTheDocument();;
+});
+
+const socketWithLostConnection = {
+  onConnectionLost: (connectionOffFunction) => {
+    setInterval(() => {
+      connectionOffFunction();
+    }, 5000);
+  },
+  onConnectionError: (errorFunction) => {},
+  startSocketConnection: () => {},
+  closeSocketConnection: () => {},
+  onTickerMessage: (updateTickersFunction) => {
+    updateTickersFunction(getQuotes());
+  }
+}
+
+test('on lost connection', async () => {
+  renderWithProviders(<Tickers socket={socketWithLostConnection} />, { store, preloadedState: { tickers: [] }})
+
+  setInterval(() => {
+    expect(screen.queryByText(/Exchange/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Lost connection. Can't update!/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Loading, please wait.../i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Looks like we are having problems, please try again later!/i)).not.toBeInTheDocument();
+  }, 7000);
 });

@@ -1,30 +1,61 @@
-import React, { useContext } from 'react';
-import { DateTime } from "luxon";
+import React, { useContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { DateTime } from 'luxon';
 
 import { Box, DataTable, Text, ResponsiveContext } from 'grommet';
 import { LinkDown, LinkUp } from 'grommet-icons';
 
-const tickersNames = {
-  'AAPL': 'Apple',
-  'GOOGL': 'Alphabet',
-  'MSFT': 'Microsoft Corporation',
-  'AMZN': 'Amazon.com',
-  'FB' : 'Meta Platforms',
-  'TSLA': 'Tesla',
-};
+import { tickersColors, tickersNames } from '../data';
+import HideTickerButton from './hideTickerButton';
 
-const tickersColors = {
-  'AAPL': '#666666',
-  'GOOGL': '#4285f4',
-  'MSFT': '#7d4cdb',
-  'AMZN': '#c26c03',
-  'FB' : '#4267b2',
-  'TSLA': '#e31937',
-};
 
 function TickersTable({ tickers }) {
-  const size = useContext(ResponsiveContext);
+  const [tickersArray, setTickersArray] = useState(tickers);
+  const [disabledTickers, setDisabledTickers] = useState([]);
 
+  //load disabled tickers from local storage
+  useEffect(() => {
+    const disabledTickersList = JSON.parse(localStorage.getItem('Disabled tickers'));
+
+    if (disabledTickersList) {
+      setDisabledTickers(disabledTickersList);
+    }
+  }, []);
+
+  //update disabled tickers list
+  useEffect(() => {
+    const newTickersArray = tickers.map((tickerInfo) => {
+      const hidden = disabledTickers.includes(tickerInfo.ticker);
+      return  { ...tickerInfo, hidden };
+    });
+
+    newTickersArray.sort((a, b) => {
+      if (a.hidden === b.hidden) {
+        return 0;
+      } else if (a.hidden === true) {
+        return 1;
+      } else return -1;
+    });
+
+    setTickersArray(newTickersArray);
+  }, [disabledTickers, tickers]);
+
+  const switchTicker = (ticker) => {
+    let newTickers = disabledTickers;
+    if (disabledTickers.length !== 0) {
+      if (disabledTickers.includes(ticker)) {
+        newTickers = disabledTickers.filter((item) => item !== ticker);
+      } else {
+        newTickers = disabledTickers.concat(ticker);
+      }
+    } else {
+      newTickers = [ticker];
+    }
+    localStorage.setItem('Disabled tickers', JSON.stringify(newTickers));
+    setDisabledTickers(newTickers);
+  }
+
+  const size = useContext(ResponsiveContext);
   const tableColumns = [
     {
       property: 'ticker',
@@ -60,68 +91,88 @@ function TickersTable({ tickers }) {
       property: 'price',
       header: 'Price',
       align: 'center',
+      render: ({ price, hidden }) => ( hidden ? '--' : price ),
     },
     {
       property: 'change',
       header: 'Change \u0024',
       align: 'center',
-      render: ({ change }) => (
-        <Box
-          pad="small"
-          background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
-          width={{ min: '110px' }}
-        >
-          {change > 0 ? (
-            <Text
-              whiteSpace="nowrap"
-              color="increasingText">
-              + { Math.abs(change) }
-            </Text>
-          ) : (
-            <Text
-              whiteSpace="nowrap"
-              color="decreasingText">
-              - { Math.abs(change) }
-            </Text>
-          )}
-
-        </Box>
-        )
+      render: ({ change, hidden }) => {
+        if (hidden) {
+          return '--';
+        } else {
+          return (
+            <Box
+              pad="small"
+              background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
+              width={{ min: '110px' }}
+            >
+              {change > 0 ? (
+                <Text
+                  whiteSpace="nowrap"
+                  color="increasingText">
+                  + { Math.abs(change) }
+                </Text>
+              ) : (
+                <Text
+                  whiteSpace="nowrap"
+                  color="decreasingText">
+                  - { Math.abs(change) }
+                </Text>
+              )}
+            </Box>
+          );
+        }
+      }
     },
     {
       property: 'change_percent',
       header: 'Change \u0025',
       align: 'center',
-      render: ({ change, change_percent }) => (
-        <Box
-          direction="row"
-          align="center"
-          width={{ min: '100px' }}
-          pad="small"
-          background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
-        >
-          {change > 0 ? <LinkUp color='increasingText' size='15px' /> : <LinkDown color='decreasingText' size='15px' /> }
-          <Text color={change > 0 ? 'increasingText' : 'decreasingText'}>
-            {change_percent}
-          </Text>
-        </Box>
-        )
+      render: ({ change, change_percent, hidden }) => {
+        if (hidden) {
+          return '--';
+        } else {
+          return (
+            <Box
+              direction="row"
+              align="center"
+              width={{ min: '100px' }}
+              pad="small"
+              background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
+            >
+              {change > 0 ? <LinkUp color='increasingText' size='15px' /> : <LinkDown color='decreasingText' size='15px' /> }
+              <Text color={change > 0 ? 'increasingText' : 'decreasingText'}>
+                {change_percent}
+              </Text>
+            </Box>
+          );
+        }
+      },
     },
     {
       property: 'dividend',
       header: 'Dividend',
       align: 'center',
+      render: ({ dividend, hidden }) => ( hidden ? '--' : dividend ),
     },
     {
       property: 'yield',
       header: 'Yield',
       align: 'center',
+      render: (tickerInfo) => ( tickerInfo.hidden ? '--' : tickerInfo.yield ),
     },
     {
       property: 'last_trade_time',
       header: 'Last trade time',
       align: 'center',
-      render: ({ last_trade_time }) => ( DateTime.fromISO(last_trade_time).toFormat('HH:mm:ss')),
+      render: ({ last_trade_time, hidden }) => ( hidden ? '--' : DateTime.fromISO(last_trade_time).toFormat('HH:mm:ss')),
+    },
+    {
+      property: '',
+      header: 'Watch/Hide',
+      align: 'center',
+      render: ({ticker}) => (<HideTickerButton hidden={disabledTickers.includes(ticker)} onTickerSwitch={() => {switchTicker(ticker)}} /> ),
     },
   ]
   return (
@@ -129,13 +180,17 @@ function TickersTable({ tickers }) {
         <DataTable
           pad= { ['xlarge', 'large'].includes(size) ? 'medium' : 'small' }
           columns={tableColumns}
-          data={tickers}
-          step={tickers.length}
+          data={tickersArray}
+          step={tickersArray.length}
           background={'backgroundWhite'}
           pin
         />
       </Box>
   )
+}
+
+TickersTable.propTypes = {
+  tickers: PropTypes.array.isRequired,
 }
 
 export default TickersTable;

@@ -28,11 +28,16 @@ const theme = deepMerge(grommet, {
   `,
   },
   button: {
-    border: {
-      color: '#aaa',
-      radius: '4px',
+    default: {
+      background: {
+        color: '#ccc',
+      },
+      border: {
+        color: '#888',
+        radius: '4px',
+        width: '2px',
+      },
     },
-    background: '#333',
     extend: `
       &:hover {
         box-shadow: none;
@@ -45,17 +50,17 @@ const theme = deepMerge(grommet, {
 function ThemedContainer({ children }) {
   return (
     <Grommet theme={theme} full>
-      <Box background={'background'} height={{ min: '100%' }} direction="column" align="stretch">
+      <Box background="background" height={{ min: '100%' }} direction="column" align="stretch">
         <Box fill="horizontal" flex={{ grow: 1 }} >
           {children}
         </Box>
       </Box>
     </Grommet>
-  )
+  );
 }
 
 ThemedContainer.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.element,
 };
 
 ThemedContainer.defaultProps = {
