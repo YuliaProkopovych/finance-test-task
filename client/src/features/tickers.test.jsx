@@ -16,21 +16,24 @@ function renderWithProviders(
   function Wrapper({ children }) {
     return <Provider store={store}>{children}</Provider>;
   }
-    return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
+  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
 
 const socketWithConnectionError = {
-  onConnectionLost: (connectionOffFunction) => { },
+  onConnectionLost: () => { },
   onConnectionError: (errorFunction) => {
     errorFunction();
   },
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
-  onTickerMessage: (updateTickersFunction) => {},
+  onTickerMessage: () => {},
 };
 
 test('on connection error', async () => {
-  renderWithProviders(<Tickers socket={socketWithConnectionError} />, { store, preloadedState: { tickers: [] }})
+  renderWithProviders(
+    <Tickers socket={socketWithConnectionError} />,
+    { store, preloadedState: { tickers: [] } },
+  );
 
   expect(screen.getByText(/Looks like we are having problems, please try again later!/i)).toBeInTheDocument();
   expect(screen.queryByText(/Loading, please wait.../i)).not.toBeInTheDocument();
@@ -39,17 +42,20 @@ test('on connection error', async () => {
 });
 
 const socketWithBadData = {
-  onConnectionLost: (connectionOffFunction) => { },
-  onConnectionError: (errorFunction) => {},
+  onConnectionLost: () => { },
+  onConnectionError: () => {},
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
   onTickerMessage: (updateTickersFunction) => {
     updateTickersFunction({});
-  }
+  },
 };
 
 test('on connection and loading', async () => {
-  renderWithProviders(<Tickers socket={socketWithBadData} />, { store, preloadedState: { tickers: [] }})
+  renderWithProviders(
+    <Tickers socket={socketWithBadData} />,
+    { store, preloadedState: { tickers: [] } },
+  );
 
   expect(screen.getByText(/Loading, please wait.../i)).toBeInTheDocument();
   expect(screen.queryByText(/Looks like we are having problems, please try again later!/i)).not.toBeInTheDocument();
@@ -58,7 +64,10 @@ test('on connection and loading', async () => {
 });
 
 test('on connection and bad data', async () => {
-  renderWithProviders(<Tickers socket={socketWithBadData} />, { store, preloadedState: { tickers: [] }})
+  renderWithProviders(
+    <Tickers socket={socketWithBadData} />,
+    { store, preloadedState: { tickers: [] } },
+  );
 
   setInterval(() => {
     screen.debug();
@@ -67,7 +76,6 @@ test('on connection and bad data', async () => {
     expect(screen.queryByText(/Lost connection. Can't update!/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Exchange/i)).not.toBeInTheDocument();
   }, 6000);
-
 });
 
 function randomValue(min = 0, max = 1, precision = 0) {
@@ -79,8 +87,7 @@ const tickers = [
 ];
 
 function getQuotes() {
-
-  const quotes = tickers.map(ticker => ({
+  const quotes = tickers.map((ticker) => ({
     ticker,
     exchange: 'NASDAQ',
     price: randomValue(100, 300, 2),
@@ -95,23 +102,26 @@ function getQuotes() {
 }
 
 const socketWithCorrectData = {
-  onConnectionLost: (connectionOffFunction) => { },
-  onConnectionError: (errorFunction) => {},
+  onConnectionLost: () => { },
+  onConnectionError: () => {},
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
   onTickerMessage: (updateTickersFunction) => {
     updateTickersFunction(getQuotes());
-  }
-}
+  },
+};
 
 test('on connection and correct data', async () => {
-  renderWithProviders(<Tickers socket={socketWithCorrectData} />, { store, preloadedState: { tickers: [] }})
+  renderWithProviders(
+    <Tickers socket={socketWithCorrectData} />,
+    { store, preloadedState: { tickers: [] } },
+  );
 
   screen.debug();
   expect(await screen.findByText(/Exchange/i)).toBeInTheDocument();
   expect(screen.queryByText(/Loading, please wait.../i)).not.toBeInTheDocument();
   expect(screen.queryByText(/Lost connection. Can't update!/i)).not.toBeInTheDocument();
-  expect(screen.queryByText(/Looks like we are having problems, please try again later!/i)).not.toBeInTheDocument();;
+  expect(screen.queryByText(/Looks like we are having problems, please try again later!/i)).not.toBeInTheDocument();
 });
 
 const socketWithLostConnection = {
@@ -120,16 +130,19 @@ const socketWithLostConnection = {
       connectionOffFunction();
     }, 5000);
   },
-  onConnectionError: (errorFunction) => {},
+  onConnectionError: () => {},
   startSocketConnection: () => {},
   closeSocketConnection: () => {},
   onTickerMessage: (updateTickersFunction) => {
     updateTickersFunction(getQuotes());
-  }
-}
+  },
+};
 
 test('on lost connection', async () => {
-  renderWithProviders(<Tickers socket={socketWithLostConnection} />, { store, preloadedState: { tickers: [] }})
+  renderWithProviders(
+    <Tickers socket={socketWithLostConnection} />,
+    { store, preloadedState: { tickers: [] } },
+  );
 
   setInterval(() => {
     expect(screen.queryByText(/Exchange/i)).toBeInTheDocument();

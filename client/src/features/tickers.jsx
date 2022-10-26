@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { change } from './tickersSlice';
+import PropTypes from 'prop-types';
+import { Box } from 'grommet';
 
-import { Text, Box } from 'grommet';
+import { change } from './tickersSlice';
 
 import TickersTable from '../components/tickersTable';
 import IntervalForm from '../components/intervalForm';
@@ -52,13 +53,18 @@ function Tickers({ socket }) {
         <TickersTable tickers={tickers} />
       </Box>
     );
-  } else {
-    return (
-      <>
-        { connectionError ? <Error type="connection-error" /> : <Loading /> }
-      </>
-    );
   }
+  return connectionError ? <Error type="connection-error" /> : <Loading />;
 }
+
+Tickers.propTypes = {
+  socket: PropTypes.shape({
+    closeSocketConnection: PropTypes.func,
+    onTickerMessage: PropTypes.func,
+    onConnectionLost: PropTypes.func,
+    onConnectionError: PropTypes.func,
+    startSocketConnection: PropTypes.func,
+  }).isRequired,
+};
 
 export default Tickers;

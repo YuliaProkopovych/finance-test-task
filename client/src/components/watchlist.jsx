@@ -11,7 +11,7 @@ function Watchlist() {
       <Heading level="3">Your watchlist</Heading>
       <Tickers socket={socket} />
     </Box>
-  )
+  );
 }
 
 export default Watchlist;

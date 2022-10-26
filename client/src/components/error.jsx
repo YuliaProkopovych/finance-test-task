@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Text, Card, Box } from 'grommet';
 
-import { Alert, StatusWarning } from 'grommet-icons';
+import { StatusWarning } from 'grommet-icons';
 
 function Error({ type }) {
   return (
@@ -24,6 +24,6 @@ function Error({ type }) {
 
 Error.propTypes = {
   type: PropTypes.string.isRequired,
-}
+};
 
 export default Error;

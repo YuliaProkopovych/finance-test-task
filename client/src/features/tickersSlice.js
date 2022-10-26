@@ -10,7 +10,7 @@ export const tickersSlice = createSlice({
   reducers: {
     change: (state, action) => {
       if (Array.isArray(action.payload)) {
-        state.tickers = action.payload;
+        state.tickers = action.payload;// eslint-disable-line
       }
     },
   },

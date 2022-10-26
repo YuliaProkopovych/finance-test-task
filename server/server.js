@@ -35,10 +35,10 @@ function getQuotes(socket) {
     exchange: 'NASDAQ',
     price: randomValue(100, 300, 2),
     change: randomValue(-200, 200, 2),
-    change_percent: randomValue(0, 1, 2),
+    changePercent: randomValue(0, 1, 2),
     dividend: randomValue(0, 1, 2),
     yield: randomValue(0, 2, 2),
-    last_trade_time: utcDate(),
+    lastTradeTime: utcDate(),
   }));
 
   socket.emit('ticker', quotes);

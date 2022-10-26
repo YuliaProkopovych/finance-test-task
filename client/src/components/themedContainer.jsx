@@ -6,7 +6,6 @@ import { StatusWarning } from 'grommet-icons';
 import { grommet } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
 
-
 const theme = deepMerge(grommet, {
   global: {
     colors: {
@@ -76,7 +75,7 @@ function ThemedContainer({ children }) {
   return (
     <Grommet theme={theme} full>
       <Box background="background" height={{ min: '100%' }} direction="column" align="stretch">
-        <Box fill="horizontal" flex={{ grow: 1 }} >
+        <Box fill="horizontal" flex={{ grow: 1 }}>
           {children}
         </Box>
       </Box>

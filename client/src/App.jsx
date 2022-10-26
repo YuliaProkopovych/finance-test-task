@@ -1,3 +1,4 @@
+import React from 'react';
 import ThemedContainer from './components/themedContainer';
 import CustomHeader from './components/header';
 import Watchlist from './components/watchlist';

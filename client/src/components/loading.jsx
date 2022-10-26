@@ -1,5 +1,10 @@
 import React from 'react';
-import { Text, Card, Spinner, Box } from 'grommet';
+import {
+  Text,
+  Card,
+  Spinner,
+  Box,
+} from 'grommet';
 
 function Loading() {
   return (

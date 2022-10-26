@@ -2,18 +2,21 @@ import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { DateTime } from 'luxon';
 
-import { Box, DataTable, Text, ResponsiveContext } from 'grommet';
+import {
+  Box,
+  DataTable,
+  Text,
+  ResponsiveContext,
+} from 'grommet';
 import { LinkDown, LinkUp } from 'grommet-icons';
 
 import { tickersColors, tickersNames } from '../data';
 import HideTickerButton from './hideTickerButton';
 
-
 function TickersTable({ tickers }) {
   const [tickersArray, setTickersArray] = useState(tickers);
   const [disabledTickers, setDisabledTickers] = useState([]);
 
-  //load disabled tickers from local storage
   useEffect(() => {
     const disabledTickersList = JSON.parse(localStorage.getItem('Disabled tickers'));
 
@@ -22,19 +25,20 @@ function TickersTable({ tickers }) {
     }
   }, []);
 
-  //update disabled tickers list
   useEffect(() => {
     const newTickersArray = tickers.map((tickerInfo) => {
       const hidden = disabledTickers.includes(tickerInfo.ticker);
-      return  { ...tickerInfo, hidden };
+      return { ...tickerInfo, hidden };
     });
 
     newTickersArray.sort((a, b) => {
       if (a.hidden === b.hidden) {
         return 0;
-      } else if (a.hidden === true) {
+      }
+      if (a.hidden === true) {
         return 1;
-      } else return -1;
+      }
+      return -1;
     });
 
     setTickersArray(newTickersArray);
@@ -53,7 +57,7 @@ function TickersTable({ tickers }) {
     }
     localStorage.setItem('Disabled tickers', JSON.stringify(newTickers));
     setDisabledTickers(newTickers);
-  }
+  };
 
   const size = useContext(ResponsiveContext);
   const tableColumns = [
@@ -77,10 +81,10 @@ function TickersTable({ tickers }) {
             </Text>
           </Box>
           <Text>
-              {tickersNames[ticker]}
+            {tickersNames[ticker]}
           </Text>
         </Box>
-      )
+      ),
     },
     {
       property: 'exchange',
@@ -91,7 +95,7 @@ function TickersTable({ tickers }) {
       property: 'price',
       header: 'Price',
       align: 'center',
-      render: ({ price, hidden }) => ( hidden ? '--' : price ),
+      render: ({ price, hidden }) => (hidden ? '--' : price),
     },
     {
       property: 'change',
@@ -100,98 +104,115 @@ function TickersTable({ tickers }) {
       render: ({ change, hidden }) => {
         if (hidden) {
           return '--';
-        } else {
-          return (
-            <Box
-              pad="small"
-              background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
-              width={{ min: '110px' }}
-            >
-              {change > 0 ? (
-                <Text
-                  whiteSpace="nowrap"
-                  color="increasingText">
-                  + { Math.abs(change) }
-                </Text>
-              ) : (
-                <Text
-                  whiteSpace="nowrap"
-                  color="decreasingText">
-                  − { Math.abs(change) }
-                </Text>
-              )}
-            </Box>
-          );
         }
-      }
+        return (
+          <Box
+            pad="small"
+            background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
+            width={{ min: '110px' }}
+          >
+            {change > 0 ? (
+              <Text
+                whiteSpace="nowrap"
+                color="increasingText"
+              >
+                +
+                { Math.abs(change) }
+              </Text>
+            ) : (
+              <Text
+                whiteSpace="nowrap"
+                color="decreasingText"
+              >
+                −
+                { Math.abs(change) }
+              </Text>
+            )}
+          </Box>
+        );
+      },
     },
     {
-      property: 'change_percent',
+      property: 'changePercent',
       header: 'Change \u0025',
       align: 'center',
-      render: ({ change, change_percent, hidden }) => {
+      render: ({ change, changePercent, hidden }) => {
         if (hidden) {
           return '--';
-        } else {
-          return (
-            <Box
-              direction="row"
-              align="center"
-              width={{ min: '100px' }}
-              pad="small"
-              gap="small"
-              background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
-            >
-              {change > 0 ? <LinkUp color='increasingText' size='15px' /> : <LinkDown color='decreasingText' size='15px' /> }
-              <Text color={change > 0 ? 'increasingText' : 'decreasingText'}>
-                {change_percent}
-              </Text>
-            </Box>
-          );
         }
+        return (
+          <Box
+            direction="row"
+            align="center"
+            width={{ min: '100px' }}
+            pad="small"
+            gap="small"
+            background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
+          >
+            {change > 0 ? <LinkUp color="increasingText" size="15px" /> : <LinkDown color="decreasingText" size="15px" /> }
+            <Text color={change > 0 ? 'increasingText' : 'decreasingText'}>
+              {changePercent}
+            </Text>
+          </Box>
+        );
       },
     },
     {
       property: 'dividend',
       header: 'Dividend',
       align: 'center',
-      render: ({ dividend, hidden }) => ( hidden ? '--' : dividend ),
+      render: ({ dividend, hidden }) => (hidden ? '--' : dividend),
     },
     {
       property: 'yield',
       header: 'Yield',
       align: 'center',
-      render: (tickerInfo) => ( tickerInfo.hidden ? '--' : tickerInfo.yield ),
+      render: (tickerInfo) => (tickerInfo.hidden ? '--' : tickerInfo.yield),
     },
     {
-      property: 'last_trade_time',
+      property: 'lastTradeTime',
       header: 'Last trade time',
       align: 'center',
-      render: ({ last_trade_time, hidden }) => ( hidden ? '--' : DateTime.fromISO(last_trade_time).toFormat('HH:mm:ss')),
+      render: ({ lastTradeTime, hidden }) => (hidden ? '--' : DateTime.fromISO(lastTradeTime).toFormat('HH:mm:ss')),
     },
     {
       property: '',
       header: 'Watch/Hide',
       align: 'center',
-      render: ({ticker}) => (<HideTickerButton hidden={disabledTickers.includes(ticker)} onTickerSwitch={() => {switchTicker(ticker)}} /> ),
-    },
-  ]
-  return (
-      <Box width={{ max: '100%' }} overflow="auto">
-        <DataTable
-          pad= { ['xlarge', 'large'].includes(size) ? 'medium' : 'small' }
-          columns={tableColumns}
-          data={tickersArray}
-          step={tickersArray.length}
-          background={'backgroundWhite'}
-          pin
+      render: ({ ticker }) => (
+        <HideTickerButton
+          hidden={disabledTickers.includes(ticker)}
+          onTickerSwitch={() => { switchTicker(ticker); }}
         />
-      </Box>
-  )
+      ),
+    },
+  ];
+  return (
+    <Box width={{ max: '100%' }} overflow="auto">
+      <DataTable
+        pad={['xlarge', 'large'].includes(size) ? 'medium' : 'small'}
+        columns={tableColumns}
+        data={tickersArray}
+        step={tickersArray.length}
+        background="backgroundWhite"
+        pin
+      />
+    </Box>
+  );
 }
 
 TickersTable.propTypes = {
-  tickers: PropTypes.array.isRequired,
-}
+  tickers: PropTypes.arrayOf(
+    PropTypes.shape({
+      ticker: PropTypes.string,
+      exchange: PropTypes.string,
+      price: PropTypes.string,
+      change: PropTypes.string,
+      change_percent: PropTypes.string,
+      yield: PropTypes.string,
+      dividend: PropTypes.string,
+    }),
+  ).isRequired,
+};
 
 export default TickersTable;
