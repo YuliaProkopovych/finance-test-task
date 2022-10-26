@@ -62,7 +62,6 @@ function trackTickers(socket) {
 }
 
 function updateTimeInterval(interval) {
-  customInterval = interval;
   clearInterval(timer);
 
   timer = setInterval(function() {
