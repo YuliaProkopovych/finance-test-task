@@ -1,8 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Grommet, Box } from 'grommet';
+import { StatusWarning } from 'grommet-icons';
 import { grommet } from 'grommet/themes';
 import { deepMerge } from 'grommet/utils';
-import PropTypes from 'prop-types';
+
 
 const theme = deepMerge(grommet, {
   global: {
@@ -44,6 +47,28 @@ const theme = deepMerge(grommet, {
         background-color: #eee;
       }
       `,
+  },
+  formField: {
+    error: {
+      icon: <StatusWarning color="status-critical" />,
+      container: {
+        align: 'center',
+        margin: {
+          left: '10px',
+        },
+      },
+      background: {
+      },
+    },
+    extend:
+    `
+       > label + div {
+         border: none;
+         > div {
+           padding: 0;
+         }
+       }
+     `,
   },
 });
 

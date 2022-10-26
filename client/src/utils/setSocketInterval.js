@@ -1,4 +1,4 @@
-import config from "../config";
+import config from '../config';
 
 const setInterval = async (interval) => {
 
@@ -13,7 +13,6 @@ const setInterval = async (interval) => {
   });
 
   const data = await res.json();
-  console.log(data);
 }
 
 export default setInterval;

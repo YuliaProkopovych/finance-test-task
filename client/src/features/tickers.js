@@ -5,6 +5,9 @@ import { change } from './tickersSlice';
 import { Text, Box } from 'grommet';
 
 import TickersTable from '../components/tickersTable';
+import IntervalForm from '../components/intervalForm';
+import Error from '../components/error';
+import Loading from '../components/loading';
 
 function Tickers({ socket }) {
   const [connectionError, setConnectionError] = useState(false);
@@ -42,18 +45,20 @@ function Tickers({ socket }) {
     };
   }, [dispatch]);
 
-  return (
-    <>
-      { tickers.length !== 0  ? (
-        <Box>
-          { connectionLost && <Text>Lost connection. Can't update!</Text> }
-          <TickersTable tickers={tickers} />
-        </Box>
-      ) : (
-        <Text>{ connectionError ? 'Looks like we are having problems, please try again later!' : 'Loading, please wait...' }</Text>
-      )}
-    </>
-  );
+  if (tickers.length !== 0) {
+    return (
+      <Box pad="medium">
+        { connectionLost ? <Error type="connection-lost" /> : <IntervalForm />}
+        <TickersTable tickers={tickers} />
+      </Box>
+    );
+  } else {
+    return (
+      <>
+        { connectionError ? <Error type="connection-error" /> : <Loading /> }
+      </>
+    );
+  }
 }
 
 export default Tickers;
