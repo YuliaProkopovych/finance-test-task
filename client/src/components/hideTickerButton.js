@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Box } from 'grommet';
+import { Box, Tip } from 'grommet';
 import { FormView, Hide } from 'grommet-icons';
 
 function HideTickerButton({ hidden, onTickerSwitch }) {
   return (
-    <Box
-      onClick={() => onTickerSwitch()}
-      focusIndicator={false}
+    <Tip
+      content={ hidden ? 'Start following updates' : 'Stop following updates'}
     >
+      <Box
+        onClick={() => onTickerSwitch()}
+        focusIndicator={false}
+      >
       { hidden ? <FormView /> : <Hide />}
-    </Box>
+      </Box>
+    </Tip>
   )
 }
 

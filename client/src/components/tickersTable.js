@@ -117,7 +117,7 @@ function TickersTable({ tickers }) {
                 <Text
                   whiteSpace="nowrap"
                   color="decreasingText">
-                  - { Math.abs(change) }
+                  − { Math.abs(change) }
                 </Text>
               )}
             </Box>
@@ -139,6 +139,7 @@ function TickersTable({ tickers }) {
               align="center"
               width={{ min: '100px' }}
               pad="small"
+              gap="small"
               background={change > 0 ? 'increasingBackground' : 'decreasingBackground'}
             >
               {change > 0 ? <LinkUp color='increasingText' size='15px' /> : <LinkDown color='decreasingText' size='15px' /> }
